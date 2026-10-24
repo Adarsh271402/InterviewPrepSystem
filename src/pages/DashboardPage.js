@@ -4,13 +4,15 @@ import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, BarC
 import { dashboardAPI, aiAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { normalizeRecommendations } from '../utils/recommendations';
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const [suggestions, setSuggestions] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsError, setSuggestionsError] = useState('');
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -20,8 +22,14 @@ export default function DashboardPage() {
 
   const fetchSuggestions = async () => {
     setLoadingSuggestions(true);
-    try { const response = await aiAPI.getSuggestions(); setSuggestions(response.data.data); }
-    catch { setSuggestions('Complete at least one mock test to get suggestions.'); }
+    setSuggestionsError('');
+    try {
+      const response = await aiAPI.getSuggestions();
+      const tips = normalizeRecommendations(response.data.data);
+      if (!tips.length) throw new Error('Empty recommendations');
+      setSuggestions(tips);
+    }
+    catch { setSuggestionsError('Could not load recommendations. Please try again.'); }
     finally { setLoadingSuggestions(false); }
   };
 
@@ -64,7 +72,12 @@ export default function DashboardPage() {
         </div>
         <div className="card ai-panel compact-ai-panel">
           <div className="card-heading-row"><div><div className="card-title">AI Recommendations</div><div className="card-subtitle">Personalized next steps</div></div><span className="ai-signal">✦</span></div>
-          {suggestions ? <div className="suggestion-copy">{suggestions}</div> : <div className="recommendation-empty"><div className="recommendation-orb">AI</div><p>Analyze your recent performance to receive targeted improvement suggestions.</p><button className="btn btn-primary btn-sm" onClick={fetchSuggestions} disabled={loadingSuggestions}>{loadingSuggestions ? 'Generating...' : 'Generate insights'}</button></div>}
+          {suggestions.length > 0 ? <>
+            <ol className="recommendation-list" aria-label="AI recommendations" tabIndex={0}>{suggestions.map((tip, index) => <li key={`${index}-${tip}`}><span className="recommendation-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><p>{tip}</p></li>)}</ol>
+            <button className="btn btn-secondary btn-sm recommendation-refresh" onClick={fetchSuggestions} disabled={loadingSuggestions}>{loadingSuggestions ? 'Refreshing...' : 'Refresh insights'}</button>
+          </> : <div className="recommendation-empty"><div className="recommendation-orb">AI</div><p>Analyze your recent performance to receive targeted improvement suggestions.</p><button className="btn btn-primary btn-sm" onClick={fetchSuggestions} disabled={loadingSuggestions}>{loadingSuggestions ? 'Generating...' : 'Generate insights'}</button></div>}
+          {loadingSuggestions && <p className="recommendation-status" role="status">Analyzing your recent performance...</p>}
+          {suggestionsError && <p className="recommendation-status recommendation-error" role="alert">{suggestionsError}</p>}
         </div>
       </div>
 
