@@ -50,3 +50,17 @@ policy.WithOrigins("http://localhost:3000")
 ## 🔑 Default Admin Login
 - Email: admin@interviewprep.com
 - Password: Admin@123
+
+## Backend
+
+The ASP.NET Core API is in `backend/`. Install the .NET 8 SDK and SQL Server.
+Before running, supply your settings through environment variables:
+
+```powershell
+$env:ConnectionStrings__DefaultConnection = 'YOUR_SQL_SERVER_CONNECTION_STRING'
+$env:JwtSettings__SecretKey = 'YOUR_RANDOM_SECRET_AT_LEAST_32_CHARACTERS'
+$env:AISettings__Groq__ApiKey = 'YOUR_GROQ_API_KEY'
+dotnet run --project backend/InterviewPrepSystem.csproj
+```
+
+See `backend/README.md` and `backend/DatabaseSetup.sql` for database setup.

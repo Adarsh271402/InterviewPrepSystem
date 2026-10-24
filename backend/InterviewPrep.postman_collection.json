@@ -1,0 +1,215 @@
+{
+  "info": {
+    "name": "AI Interview Prep System",
+    "_postman_id": "interview-prep-collection",
+    "description": "Complete API collection for AI-Powered Interview Preparation System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://localhost:7001", "type": "string" },
+    { "key": "token",   "value": "",                       "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"John@123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": ["const r = pm.response.json(); if (r.data?.token) pm.collectionVariables.set('token', r.data.token);"]
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"John@123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/category",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Create Category (Admin)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/category",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Docker & Kubernetes\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Questions",
+      "item": [
+        {
+          "name": "Get All Questions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/question?categoryId=3&difficulty=Medium",
+              "query": [
+                { "key": "categoryId", "value": "3" },
+                { "key": "difficulty", "value": "Medium" }
+              ]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Create Question (Admin)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/question",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryId\": 3,\n  \"questionText\": \"What is the difference between IActionResult and ActionResult<T>?\",\n  \"difficultyLevel\": \"Medium\",\n  \"correctAnswer\": \"IActionResult is the base interface. ActionResult<T> is generic and provides type safety plus automatic JSON serialization.\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mock Test",
+      "item": [
+        {
+          "name": "Start Mock Test",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/mocktest/start",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryId\": 3,\n  \"numberOfQuestions\": 5,\n  \"difficultyLevel\": \"Mixed\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Submit Answer (AI Evaluates)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/mocktest/submit",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mockTestId\": 1,\n  \"questionId\": 1,\n  \"userAnswer\": \"Dependency Injection is a design pattern in ASP.NET Core where the dependencies of a class are provided externally rather than the class creating them. The built-in IoC container manages object lifetimes using AddSingleton, AddScoped, and AddTransient.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Test Result",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mocktest/result/1",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Get Test History",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/mocktest/history",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI Features",
+      "item": [
+        {
+          "name": "AI Evaluate Answer",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/ai/evaluate",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is JWT Authentication?\",\n  \"userAnswer\": \"JWT is a token used for authentication.\",\n  \"difficultyLevel\": \"Medium\"\n}"
+            }
+          }
+        },
+        {
+          "name": "AI Generate Questions",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/ai/generate-questions",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryName\": \"ASP.NET Core\",\n  \"difficultyLevel\": \"Medium\",\n  \"numberOfQuestions\": 5,\n  \"targetAudience\": \"freshers\"\n}"
+            }
+          }
+        },
+        {
+          "name": "AI Career Suggestions",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ai/suggestions",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/dashboard",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11723.189 insiders
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterviewPrepSystem", "InterviewPrepSystem.csproj", "{BA315BAC-562E-A20A-5CCC-9C4D47E3BFBB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA315BAC-562E-A20A-5CCC-9C4D47E3BFBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA315BAC-562E-A20A-5CCC-9C4D47E3BFBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA315BAC-562E-A20A-5CCC-9C4D47E3BFBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA315BAC-562E-A20A-5CCC-9C4D47E3BFBB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3CC194E1-BCF8-4C5A-BC07-09BE3C5FA11A}
+	EndGlobalSection
+EndGlobal
