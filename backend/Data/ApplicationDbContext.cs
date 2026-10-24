@@ -33,6 +33,7 @@ namespace InterviewPrepSystem.Data
             modelBuilder.Entity<Category>(e =>
             {
                 e.HasKey(c => c.Id);
+                if (Database.IsNpgsql()) e.Property(c => c.Id).HasIdentityOptions(startValue: 8);
                 e.Property(c => c.Name).HasMaxLength(100).IsRequired();
             });
 
