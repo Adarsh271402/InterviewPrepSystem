@@ -1,5 +1,11 @@
 # InterviewAI — React Frontend
 
+**Live application: [Open InterviewAI](https://interviewprep-adarsh.netlify.app)**
+
+**Backend health:** [Render API](https://interviewprep-api-ll1d.onrender.com/health)
+
+Register an account to start practicing. The free backend may take about a minute to wake up after inactivity.
+
 ## 🚀 Quick Setup (3 Steps)
 
 ### Step 1 — Install Node.js
