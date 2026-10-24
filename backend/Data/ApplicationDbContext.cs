@@ -26,7 +26,7 @@ namespace InterviewPrepSystem.Data
                 e.Property(u => u.Name).HasMaxLength(100).IsRequired();
                 e.Property(u => u.Email).HasMaxLength(100).IsRequired();
                 e.Property(u => u.Role).HasMaxLength(50).HasDefaultValue("User");
-                e.Property(u => u.CreatedDate).HasDefaultValueSql("GETDATE()");
+                e.Property(u => u.CreatedDate).HasDefaultValueSql(Database.IsNpgsql() ? "CURRENT_TIMESTAMP" : "GETDATE()");
             });
 
             // Category
@@ -52,7 +52,7 @@ namespace InterviewPrepSystem.Data
             {
                 e.HasKey(m => m.Id);
                 e.Property(m => m.Status).HasMaxLength(50).HasDefaultValue("InProgress");
-                e.Property(m => m.CreatedDate).HasDefaultValueSql("GETDATE()");
+                e.Property(m => m.CreatedDate).HasDefaultValueSql(Database.IsNpgsql() ? "CURRENT_TIMESTAMP" : "GETDATE()");
                 e.HasOne(m => m.User)
                     .WithMany(u => u.MockTests)
                     .HasForeignKey(m => m.UserId)

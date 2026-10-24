@@ -17,3 +17,5 @@ Thumbs.db
 *.suo
 **/appsettings.Development.json
 **/appsettings.Local.json
+
+.netlify/

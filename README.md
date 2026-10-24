@@ -64,3 +64,13 @@ dotnet run --project backend/InterviewPrepSystem.csproj
 ```
 
 See `backend/README.md` and `backend/DatabaseSetup.sql` for database setup.
+
+## Separate production hosting
+
+- Frontend: Netlify (`netlify.toml`), set `REACT_APP_API_URL` to the live Render API origin, then rebuild.
+- Backend: Render Docker service (`render.yaml`), using the Free plan.
+- Database: a dedicated Neon PostgreSQL database. Set `DatabaseProvider=PostgreSQL` and `ConnectionStrings__DefaultConnection` to its .NET connection string. The initial PostgreSQL schema and categories are created on first startup. Existing SQL Server data is not transferred.
+- Configure `JwtSettings__SecretKey` and `AISettings__Groq__ApiKey` only in the hosting dashboard. The Blueprint generates the JWT signing secret.
+- Backend health endpoint: `/health`.
+
+Free Render services can sleep after inactivity. Keep the database separate from other applications.

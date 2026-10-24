@@ -14,8 +14,15 @@ var builder = WebApplication.CreateBuilder(args);
 // ================================================================
 //  DATABASE
 // ================================================================
+var databaseProvider = builder.Configuration["DatabaseProvider"] ?? "SqlServer";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (databaseProvider.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase))
+        options.UseNpgsql(connection);
+    else
+        options.UseSqlServer(connection);
+});
 
 // ================================================================
 //  JWT AUTHENTICATION
@@ -133,7 +140,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+    if (databaseProvider.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase))
+        db.Database.EnsureCreated();
+    else
+        db.Database.Migrate();
 }
 
 // ----------------------------------------------------------------
@@ -155,6 +165,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapControllers();
 
 app.Run();
